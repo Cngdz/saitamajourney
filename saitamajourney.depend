@@ -1,0 +1,35 @@
+# depslib dependency file v1.0
+1715230733 source:c:\ki2\game\saitamajourney\main.cpp
+	"graphics.h"
+	"defs.h"
+	"characters.h"
+	"func.cpp"
+
+1712890447 source:c:\ki2\game\saitamajourney\graphics.cpp
+	"graphics.h"
+
+1714842143 c:\ki2\game\saitamajourney\graphics.h
+	"defs.h"
+	"characters.h"
+	"func.cpp"
+
+1715226613 c:\ki2\game\saitamajourney\defs.h
+	<iostream>
+	<SDL.h>
+	<SDL_image.h>
+	<SDL_ttf.h>
+	<SDL_mixer.h>
+	<vector>
+	<algorithm>
+	<string>
+	<fstream>
+
+1713671632 c:\ki2\game\saitamajourney\characters.h
+	"defs.h"
+	"algorithm"
+	"graphics.h"
+
+1713323143 c:\ki2\game\saitamajourney\func.cpp
+
+1713323143 source:c:\ki2\game\saitamajourney\func.cpp
+
