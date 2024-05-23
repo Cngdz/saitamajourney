@@ -182,6 +182,7 @@ struct Graphics {
             Mix_PlayChannel( -1, gChunk, 0 );
         }
     }
+
 };
 
 

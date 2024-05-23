@@ -6,22 +6,23 @@
 using namespace std;
 
     void update(vector<vector<int>>& positions,int time,int x,int y,int move,int &last) {
-        int now = SDL_GetTicks();
+    int now = SDL_GetTicks();
 
+    x = rand() % x + x ;
 
-            if (now - last >= time) {
-                last = now;
-                positions.push_back({x, y}); // Thêm một con slime mới tại vị trí (x, y)
-            }
-
-        for (auto& position : positions) {
-            position[0] -= move; // Di chuyển con slime sang trái
-        }
-
-        positions.erase(std::remove_if(positions.begin(), positions.end(), [](const vector<int>& position) {
-            return position[0] < -32; // Loại bỏ con slime nếu đã đi qua khỏi màn hình
-        }), positions.end());
+    if (now - last >= time) {
+        last = now;
+        positions.push_back({x, y}); // Thêm một con enemy mới tại vị trí (x, y)
     }
+
+    for (auto& position : positions) {
+        position[0] -= move; // Di chuyển con enemy sang trái
+    }
+
+    positions.erase(remove_if(positions.begin(), positions.end(), [](const vector<int>& position) {
+        return position[0] < -32; // Loại bỏ con enemy nếu đã đi qua khỏi màn hình
+    }), positions.end());
+}
 
     void ve(Graphics& graphic , Threats& threat , vector<vector<int>>& positions) {
         for (const auto& position : positions) {
@@ -52,13 +53,16 @@ bool isMouseOverButton(const SDL_Rect& button, int mouseX, int mouseY) {
             mouseY >= button.y && mouseY <= button.y + button.h);
 }
 
+
 int main(int argc, char *argv[]) {
 
     Graphics graphics;
     graphics.init();
 
     ScrollingBackground background;
+    ScrollingBackground background2;
     background.setTexture(graphics.loadTexture(BACKGROUND_IMG));
+    background2.setTexture(graphics.loadTexture(BACKGROUND2));
 
     SDL_Texture* menuTexture = graphics.loadTexture("image\\menu.png");
     SDL_Texture* gameoverTexture = graphics.loadTexture("image\\gameover.png");
@@ -66,6 +70,8 @@ int main(int argc, char *argv[]) {
     SDL_Texture* news = graphics.loadTexture ("image\\new.png");
     SDL_Texture* hlp = graphics.loadTexture ("image\\hlp.png");
     SDL_Texture* qitt = graphics.loadTexture ("image\\quitt.png");
+    SDL_Texture* bienh = graphics.loadTexture ("image\\bh.png");
+    SDL_Texture* bh2 = graphics.loadTexture ("image\\bh2.png");
 
     Sprite saitama;
     SDL_Texture* saitamaTexture = graphics.loadTexture(SAITAMA_SPRITE_FILE);
@@ -82,6 +88,10 @@ int main(int argc, char *argv[]) {
     Sprite die;
     SDL_Texture* dieTexture = graphics.loadTexture(DIE_SPRITE_FILE);
     die.init(dieTexture, DIE_FRAMES, DIE_CLIPS);
+
+    Sprite goku;
+    SDL_Texture* gokuTexture = graphics.loadTexture(GOKU_SPRITE_FILE);
+    goku.init(gokuTexture, GOKU_FRAMES, GOKU_CLIPS);
 
     Threats stone;
     SDL_Texture* stoneTexture = graphics.loadTexture(STONE_SPRITE_FILE);
@@ -110,7 +120,15 @@ int main(int argc, char *argv[]) {
     int lastStone = SDL_GetTicks();
     int lastBuu = SDL_GetTicks();
 
+    srand(time(0));
+
     while (!quit) {
+
+        int bh=score-diem;
+        if(bh>=200){
+            ssbh=true;
+            diem=score;
+        }
         SDL_Event event;
         if (!gameover) {
             graphics.renderTexture(menuTexture, 0, 0); }
@@ -137,6 +155,24 @@ int main(int argc, char *argv[]) {
                     if(!isJumping && !isdie) {isCrouching = true;}
                     crouchDuration = crouchDurationMax; // Đặt thời gian cúi xuống về giá trị tối đa
                 }
+                if (event.key.keysym.scancode == SDL_SCANCODE_RIGHT) {
+                    graphics.play(jucr);
+                    if(ssbh) {
+                        bienhinh = true;
+                    }
+                }
+                if (event.key.keysym.scancode == SDL_SCANCODE_X) {
+                    if (offvl) {
+                        Mix_VolumeMusic(MIX_MAX_VOLUME); // Bật lại âm thanh với âm lượng ban đầu
+                        offvl = false; // Đặt offvl thành false
+                    } else {
+                        Mix_VolumeMusic(0); // Tắt âm thanh
+                        offvl = true; // Đặt offvl thành true
+                    }
+                }
+                if (event.key.keysym.scancode == SDL_SCANCODE_C) {
+
+                }
             }
             else if (event.type == SDL_MOUSEBUTTONDOWN ){
                     graphics.play(click);
@@ -146,10 +182,10 @@ int main(int argc, char *argv[]) {
                         // Kiểm tra xem chuột có nằm trong vị trí của các nút không
                         if (isMouseOverButton(PLAY_BUTTON, mouseX, mouseY) && !isplaying && !help) {
                             // Người dùng nhấn vào nút "Play Game"
-                            // Thực hiện hành động tương ứng
                             gameover = false;
                             isplaying = true;
                             // Reset tất cả các biến và trạng thái của trò chơi về giá trị ban đầu
+
                                     lastSlime = SDL_GetTicks();
                                     lastStone = SDL_GetTicks();
                                     lastBuu = SDL_GetTicks();
@@ -159,20 +195,19 @@ int main(int argc, char *argv[]) {
                                     crouchDuration = crouchDurationMax;
                                     score=0;
                                     dietime=200;
+                                    diem=0;
+                                    bienhinh=0;
+                                    ssbh=0;
                                     // Xóa các vị trí của nhân vật và các mục tiêu khác
                                     po1.clear();
                                     po2.clear();
                                     po3.clear();
 
-                                    // Xóa bất kỳ texture không còn cần thiết
-//                            SDL_DestroyTexture(menuTexture);
                         } else if (isMouseOverButton(HELP_BUTTON, mouseX, mouseY) && !isplaying  ) {
                             // Người dùng nhấn vào nút "Help"
-                            // Thực hiện hành động tương ứng
                             help=1;
                         } else if (isMouseOverButton(QUIT_BUTTON, mouseX, mouseY) && !isplaying && !help) {
                             // Người dùng nhấn vào nút "Quit"
-                            // Thực hiện hành động tương ứng
                             quit=1;
                         } else if (isMouseOverButton (X_BUTTON,mouseX,mouseY)) {
                             help=0;
@@ -208,22 +243,22 @@ int main(int argc, char *argv[]) {
     }
     if(isplaying) {
              a=score/100+ 1;
-            update(po1,8000,801,380,8+a,lastSlime);
-            update(po2,2500,801,395,8+a,lastStone);
-            update(po3,20000,801,385,15+a,lastBuu);
-
-        if (isCrouching ) {
+            update(po1,8000,801,328,8+a,lastSlime);
+            update(po2,2500,801,343,8+a,lastStone);
+            update(po3,20000,801,333,15+a,lastBuu);
+        if (isCrouching && !bienhinh) {
             // Xử lý khi nhân vật đang cúi xuống
             crouch.tick(); // Cập nhật frame nhân vật
-            background.scroll(5+a);
+            background2.scroll(8+a);
             graphics.prepareScene();
             graphics.render(background);
-            SDL_Rect playerRect = { 150,450, 40, 2 };
+            graphics.render(background2);
+            SDL_Rect playerRect = { 150,398, 40, 2 };
 
-            if (crouchDuration>=190)   graphics.render2(150, 395, crouch, 0); // Sử dụng frame của nhân vật khi cúi
-            else if (crouchDuration>=180) graphics.render2(150, 395, crouch, 1);
-            else if (crouchDuration>=160) graphics.render2(150, 395, crouch, 2);
-            else if (crouchDuration>=0) graphics.render2(150, 395, crouch, 3);
+            if (crouchDuration>=190)   graphics.render2(150, 335, crouch, 0); // Sử dụng frame của nhân vật khi cúi
+            else if (crouchDuration>=180) graphics.render2(150, 335, crouch, 1);
+            else if (crouchDuration>=160) graphics.render2(150, 335, crouch, 2);
+            else if (crouchDuration>=0) graphics.render2(150, 335, crouch, 3);
 
             // Giảm thời gian cúi xuống
             crouchDuration-=10;
@@ -238,25 +273,27 @@ int main(int argc, char *argv[]) {
 
         }
         // Xử lý khi nhân vật đang ở trạng thái nhảy
-        else if (isJumping ) {
+        else if (isJumping && !bienhinh ) {
             // Xử lý khi nhân vật đang nhảy lên
             jumpHeight += jumpSpeed;
             jump.tick(); // Cập nhật frame nhân vật
-            background.scroll(5+a);
+            background2.scroll(8+a);
             graphics.prepareScene();
             graphics.render(background);
+            graphics.render(background2);
+
 //            playerRect.y = 395 - jumpHeight;
-            SDL_Rect playerRect = { 150, 395-jumpHeight, 30, 30 };
+            SDL_Rect playerRect = { 150, 343-jumpHeight, 30, 30 };
             // Vẽ nhân vật ở vị trí hiện tại và nhảy lên từ từ
             if (jumpHeight < maxJumpHeight) {
                 // Sử dụng frame đầu tiên của sprite nhảy
-                graphics.render2(150, 395 - jumpHeight, jump, 0);
+                graphics.render2(150, 343 - jumpHeight, jump, 0);
             } else if (jumpHeight <= 2 * maxJumpHeight) {
                 // Sử dụng frame thứ hai của sprite nhảy
-                graphics.render2(150, 395 - maxJumpHeight, jump, 1);
+                graphics.render2(150, 343 - maxJumpHeight, jump, 1);
             } else {
                 // Sử dụng frame thứ ba của sprite nhảy
-                graphics.render2(150, 395 - (3 * maxJumpHeight - jumpHeight), jump, 2);
+                graphics.render2(150, 343 - (3 * maxJumpHeight - jumpHeight), jump, 2);
             }
 
             // Khi nhảy đạt đến độ cao tối đa, bắt đầu giảm chiều cao nhảy
@@ -268,18 +305,39 @@ int main(int argc, char *argv[]) {
             handleCollision(po2,die,graphics,45,60,playerRect);
             handleCollision(po3,die,graphics,90,93,playerRect);
         }
+        else if (bienhinh && !isdie){
+            goku.tick();
+            background2.scroll(8+a);
+            graphics.prepareScene();
+            graphics.render(background);
+            graphics.render(background2);
+            if (gktime >= 950) graphics.render2(150, 320, goku, 0);
+            else if (gktime >= 900) graphics.render2(150, 320, goku, 1);
+            else if (gktime >= 850) graphics.render2(150, 320, goku, 2);
+            else if (gktime >= 800) graphics.render2(150, 320, goku, 3);
+            else graphics.render2(150, 320, goku, 4);
+
+            gktime -= 5;
+
+            if (gktime <= 0) {
+                bienhinh = false;
+                ssbh=false;
+                gktime=1000;
+            }
+        }
         else if (isdie ) {
             if (dietime>185) graphics.play(bonk);
             die.tick();
 //            background.scroll(5);
             graphics.prepareScene();
             graphics.render(background);
-            if (dietime >= 150) graphics.render2(140, 360, die, 0); // Vẽ các frame chết liên tục
-            else if (dietime >= 100) graphics.render2(70, 380, die, 1);
-            else if (dietime >= 80) graphics.render2(40, 395, die, 2);
-            else graphics.render2(50, 395, die, 3);
+            graphics.render(background2);
+            if (dietime >= 180) graphics.render2(140, 308, die, 0); // Vẽ các frame chết liên tục
+            else if (dietime >= 160) graphics.render2(100, 328, die, 1);
+            else if (dietime >= 140) graphics.render2(70, 338, die, 2);
+            else graphics.render2(70, 338, die, 3);
 
-            dietime -= 8;
+            dietime -= 5;
 
             if (dietime <= 0) {
                 isdie = false;
@@ -288,15 +346,17 @@ int main(int argc, char *argv[]) {
 
             }
     }
+
         else {
             // Xử lý khi nhân vật đang ở trạng thái bình thường
-            playerRect.y = 395;
+
             saitama.tick(); // Cập nhật frame nhân vật
-            background.scroll(5+a);
+            background2.scroll(8+a);
             graphics.prepareScene();
             graphics.render(background);
-            graphics.render2(150, 395, saitama); // Vẽ nhân vật ở vị trí bình thường
-            SDL_Rect playerRect = { 150, 395, 30, 55 };
+            graphics.render(background2);
+            graphics.render2(150, 343, saitama); // Vẽ nhân vật ở vị trí bình thường
+            SDL_Rect playerRect = { 150, 343, 30, 55 };
             handleCollision(po1,die,graphics,25,30,playerRect);
             handleCollision(po2,die,graphics,45,60,playerRect);
             handleCollision(po3,die,graphics,90,93,playerRect);
@@ -304,6 +364,10 @@ int main(int argc, char *argv[]) {
 
 //         Cập nhật frame của con slime
        if(isplaying){
+        graphics.renderTexture(bh2,20,18);
+        if(ssbh) {graphics.renderTexture(bienh,20,18);}
+
+
         slime.tick();
         stone.tick();
         buu.tick();
@@ -321,7 +385,7 @@ int main(int argc, char *argv[]) {
         string h=to_string(highest_score);
         SDL_Texture* minscotext = graphics.renderText(m,minifont,minicolor);
         SDL_Texture* hightext = graphics.renderText(h,minifont,minicolor);
-        if (now-last>=100){
+        if (now-last>=150){
             score+=1;
             last=now;
         }
@@ -346,8 +410,7 @@ int main(int argc, char *argv[]) {
        }
     }
         graphics.presentScene();
-        SDL_Delay(50);
-
+        SDL_Delay(30);
     }
 
     // Giải phóng bộ nhớ và thoát
@@ -358,6 +421,9 @@ int main(int argc, char *argv[]) {
     SDL_DestroyTexture(stoneTexture);
     SDL_DestroyTexture (buuTexture);
     SDL_DestroyTexture (dieTexture);
+    SDL_DestroyTexture (gokuTexture);
+    SDL_DestroyTexture (bh2);
+    SDL_DestroyTexture (bienh);
     SDL_DestroyTexture(background.texture);
     SDL_DestroyTexture (gameoverTexture);
     SDL_DestroyTexture (helpTexture);
