@@ -125,7 +125,7 @@ int main(int argc, char *argv[]) {
     while (!quit) {
 
         int bh=score-diem;
-        if(bh>=200){
+        if(bh>=20){
             ssbh=true;
             diem=score;
         }
@@ -170,8 +170,11 @@ int main(int argc, char *argv[]) {
                         offvl = true; // Đặt offvl thành true
                     }
                 }
-                if (event.key.keysym.scancode == SDL_SCANCODE_C) {
-
+                if (event.key.keysym.scancode == SDL_SCANCODE_LEFT) {
+                      graphics.play(jucr);
+                    if(bienhinh) {
+                        bienhinh = false;
+                    }
                 }
             }
             else if (event.type == SDL_MOUSEBUTTONDOWN ){
