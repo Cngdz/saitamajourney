@@ -125,7 +125,7 @@ int main(int argc, char *argv[]) {
     while (!quit) {
 
         int bh=score-diem;
-        if(bh>=150){
+        if(bh>=200){
             ssbh=true;
             diem=score;
         }
@@ -159,6 +159,7 @@ int main(int argc, char *argv[]) {
                     graphics.play(jucr);
                     if(ssbh) {
                         bienhinh = true;
+                        gktime=1000;
                     }
                 }
                 if (event.key.keysym.scancode == SDL_SCANCODE_X) {
