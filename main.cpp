@@ -125,7 +125,7 @@ int main(int argc, char *argv[]) {
     while (!quit) {
 
         int bh=score-diem;
-        if(bh>=20){
+        if(bh>=150){
             ssbh=true;
             diem=score;
         }
@@ -174,6 +174,7 @@ int main(int argc, char *argv[]) {
                       graphics.play(jucr);
                     if(bienhinh) {
                         bienhinh = false;
+                        ssbh=false;
                     }
                 }
             }
@@ -200,7 +201,7 @@ int main(int argc, char *argv[]) {
                                     dietime=200;
                                     diem=0;
                                     bienhinh=0;
-                                    ssbh=0;
+                                    ssbh=true;
                                     // Xóa các vị trí của nhân vật và các mục tiêu khác
                                     po1.clear();
                                     po2.clear();
@@ -248,7 +249,7 @@ int main(int argc, char *argv[]) {
              a=score/100+ 1;
             update(po1,8000,801,328,8+a,lastSlime);
             update(po2,2500,801,343,8+a,lastStone);
-            update(po3,20000,801,333,15+a,lastBuu);
+            update(po3,20000,801,330,15+a,lastBuu);
         if (isCrouching && !bienhinh) {
             // Xử lý khi nhân vật đang cúi xuống
             crouch.tick(); // Cập nhật frame nhân vật

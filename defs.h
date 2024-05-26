@@ -21,7 +21,7 @@ const SDL_Rect QUIT_BUTTON = { 195, 344, 400, 60 };
 const SDL_Rect X_BUTTON = { 360, 0, 55, 50};
     SDL_Rect playerRect = { 150, 395, 30, 55 };
     SDL_Color color= {255,222,89};
-    SDL_Color minicolor= {255, 255, 255};
+    SDL_Color minicolor= {128, 128, 128};
 
     bool quit = false;
     bool isJumping = false;
@@ -44,7 +44,7 @@ const SDL_Rect X_BUTTON = { 360, 0, 55, 50};
     int a=1;
     int diem=0;
     bool bienhinh=0;
-    bool ssbh=false;
+    bool ssbh=true;
     bool offvl=0;
     bool newss=0, hlps=0, qitts=0;
 const char*  SAITAMA_SPRITE_FILE = "image\\shaolin_running_strip.png";

@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1716430509 source:c:\ki2\game\saitamajourney\main.cpp
+1716655148 source:c:\ki2\game\saitamajourney\main.cpp
 	"graphics.h"
 	"defs.h"
 	"characters.h"
@@ -13,7 +13,7 @@
 	"characters.h"
 	"func.cpp"
 
-1716430509 c:\ki2\game\saitamajourney\defs.h
+1716694160 c:\ki2\game\saitamajourney\defs.h
 	<iostream>
 	<SDL.h>
 	<SDL_image.h>
