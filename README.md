@@ -22,5 +22,5 @@ You need to control the character to overcome obstacles by pressing buttons
 - -> to Tranform
 - <- to cancel the tranform
 
-![picture](image\\manhinh.png)
+![picture](manhinh.png)
  
